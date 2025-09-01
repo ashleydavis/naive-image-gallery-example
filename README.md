@@ -9,12 +9,23 @@ A simple React image gallery website.
    npm install
    ```
 
-2. Start the development server:
+2. Set up Unsplash API key:
+   ```bash
+   export UNSPLASH_ACCESS_KEY=your_api_key_here
+   ```
+   Get your free API key at [https://unsplash.com/developers](https://unsplash.com/developers)
+
+3. Download gallery images:
+   ```bash
+   npm run download
+   ```
+
+4. Start the development server:
    ```bash
    npm run dev
    ```
 
-3. Open your browser to the URL shown in the terminal (typically http://localhost:5173)
+5. Open your browser to the URL shown in the terminal (typically http://localhost:5173)
 
 ## Features
 
@@ -24,6 +35,7 @@ A simple React image gallery website.
 
 ## Scripts
 
+- `npm run download` - Download 100 random images from Unsplash
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build

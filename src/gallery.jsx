@@ -3,10 +3,8 @@ import React, { useState, useEffect } from 'react';
 function generateImages(count = 50) {
   const images = [];
   for (let i = 1; i <= count; i++) {
-    const isPortrait = i % 2 === 0;
-    const dimensions = isPortrait ? '200/300' : '300/200';
     images.push({
-      thumb: `https://picsum.photos/${dimensions}?random=${i}`
+      thumb: `/images/image-${i.toString().padStart(2, '0')}.jpg`
     });
   }
   return images;
