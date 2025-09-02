@@ -1,6 +1,7 @@
 import React from 'react';
 import FPSStats from 'react-fps-stats';
 import { MemoryMonitor } from './memory-monitor.jsx';
+import { ImageMemoryMonitor } from './image-memory-monitor.jsx';
 import { Gallery } from './gallery.jsx';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           bottom={10}
       />
       <MemoryMonitor />
+      <ImageMemoryMonitor />
       <h1>Simple Image Gallery</h1>
       <Gallery />
     </div>
