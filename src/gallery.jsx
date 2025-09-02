@@ -148,8 +148,6 @@ export function Gallery() {
             key={index}
             style={{
               height: "200px",
-              borderRadius: "8px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
             }} 
             src={image.thumb} 
             alt={`Gallery image ${index + 1}`}
