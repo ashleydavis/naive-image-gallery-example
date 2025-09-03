@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-async function fetchImagesFromAPI(nextToken = null, retries = 3) {
+async function fetchImagesFromAPI(nextToken = undefined, retries = 3) {
   let url = 'https://photosphere-100k.codecapers.com.au/get-all?db=07156b64-d625-4aed-a53b-ede22866f718&col=metadata';
   if (nextToken) {
     url += `&next=${nextToken}`;
@@ -28,25 +28,29 @@ async function fetchImagesFromAPI(nextToken = null, retries = 3) {
 
 export function Gallery() {
   const [images, setImages] = useState([]);
-  const loadingRef = useRef(true);
-  
-  async function loadMoreImages(nextToken = undefined) {
-    loadingRef.current = true;
-    
-    const result = await fetchImagesFromAPI(nextToken);    
-
-    console.log(`Loaded ${result.images.length} images.`);
-    
-    setImages(prev => [...prev, ...result.images]);
-    loadingRef.current = false;
-    
-    if (result.next) {
-      setTimeout(() => loadMoreImages(result.next), 100);
-    }
-  };
 
   useEffect(() => {
-    loadMoreImages();
+    let loading = true; // Set this to false to stop loading.
+
+    async function loadMoreImages(nextToken = undefined) {
+      if (!loading) {
+        // Finished loading.
+        return;
+      }
+      
+      const result = await fetchImagesFromAPI(nextToken);    
+      setImages(prev => [...prev, ...result.images]);
+      
+      if (result.next) {
+        setTimeout(() => loadMoreImages(result.next), 100);
+      }
+    };
+
+    setTimeout(() => loadMoreImages(), 100);
+
+    return () => {
+      loading = false;
+    };
   }, []);
 
   if (images.length === 0) {
