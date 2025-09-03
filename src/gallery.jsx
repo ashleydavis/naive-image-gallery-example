@@ -1,16 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-async function fetchImagesFromAPI(nextToken = null) {
+async function fetchImagesFromAPI(nextToken = null, retries = 3) {
   let url = 'https://photosphere-100k.codecapers.com.au/get-all?db=07156b64-d625-4aed-a53b-ede22866f718&col=metadata';
   if (nextToken) {
     url += `&next=${nextToken}`;
   }
-  const response = await fetch(url);
-  const data = await response.json();
-  return {
-    images: data.records.map(record => ({ thumb: record.properties.fullData.src?.tiny || record.properties.fullData.urls?.thumb })),
-    next: data.next
-  };
+  
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const response = await fetch(url);
+    
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        images: data.records.map(record => ({ thumb: record.properties.fullData.src?.tiny || record.properties.fullData.urls?.thumb })),
+        next: data.next
+      };
+    }
+    
+    if (attempt < retries) {
+      console.log(`Retry ${attempt + 1} for ${url}`);
+      await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+    }
+  }
+  
+  throw new Error(`Failed to fetch after ${retries + 1} attempts`);
 }
 
 export function Gallery() {
