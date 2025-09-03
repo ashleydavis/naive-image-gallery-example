@@ -41,7 +41,18 @@ export function Gallery() {
       const result = await fetchImagesFromAPI(nextToken);    
       setImages(prev => [...prev, ...result.images]);
       
+      const totalNow = (images.length) + (result.images.length);
+
+      if (totalNow > 10_000) {
+        console.log(`Done loading!`);
+        return; // No more.
+      }
+
       if (result.next) {
+        // The framerate bounces around, but isn't too bad.
+        // loadMoreImages(result.next);
+
+        // Framerate still bounces around but is a bit better.
         setTimeout(() => loadMoreImages(result.next), 100);
       }
     };
