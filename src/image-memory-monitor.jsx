@@ -11,7 +11,7 @@ export function ImageMemoryMonitor() {
       images.forEach(img => {
         if (img.complete && img.naturalWidth && img.naturalHeight) {
           // Estimate: width × height × 4 bytes (RGBA) for uncompressed bitmap
-          const memoryBytes = img.naturalWidth * img.naturalHeight * 4;
+          const memoryBytes = img.naturalWidth * img.naturalHeight * 4 * 0.2; // By 0.2 because I assume jpgs are 20% the size of an uncompressed image.
           totalMemory += memoryBytes;
         }
       });
