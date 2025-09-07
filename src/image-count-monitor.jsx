@@ -1,31 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export function ImageCountMonitor() {
-  const [imageCount, setImageCount] = useState(0);
-
-  useEffect(() => {
-    const updateImageCount = () => {
-      const images = document.querySelectorAll('img');
-      setImageCount(images.length);
-    };
-
-    // Update initially and on interval
-    updateImageCount();
-    const interval = setInterval(updateImageCount, 500);
-
-    // Listen for DOM changes
-    const observer = new MutationObserver(updateImageCount);
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-
-    return () => {
-      clearInterval(interval);
-      observer.disconnect();
-    };
-  }, []);
-
+export function ImageCountMonitor({ imageCount }) {
   return (
     <div
       style={{

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { ImageCountMonitor } from './image-count-monitor.jsx';
 
 async function fetchImagesFromAPI(nextToken = undefined, retries = 3) {
   let url = 'https://photosphere-100k.codecapers.com.au/get-all?db=07156b64-d625-4aed-a53b-ede22866f718&col=metadata';
@@ -28,6 +29,7 @@ async function fetchImagesFromAPI(nextToken = undefined, retries = 3) {
 
 export function Gallery() {
   const [images, setImages] = useState([]);
+  const [totalImages, setTotalImages] = useState(0);
 
   useEffect(() => {
     let loading = true; // Set this to false to stop loading.
@@ -39,56 +41,64 @@ export function Gallery() {
       }
       
       const result = await fetchImagesFromAPI(nextToken);    
-      setImages(prev => [...prev, ...result.images]);
       
-      const totalNow = (images.length) + (result.images.length);
-
-      if (totalNow > 10_000) {
-        console.log(`Done loading!`);
-        return; // No more.
-      }
-
+      setImages(prev => [...prev, ...result.images]);
+      setTotalImages(prev => prev + result.images.length);
+    
       if (result.next) {
-        // The framerate bounces around, but isn't too bad.
+        // Might cause stack overflow.
         // loadMoreImages(result.next);
 
-        // Framerate still bounces around but is a bit better.
-        setTimeout(() => loadMoreImages(result.next), 100);
+        // Postpone loading of next page for a moment.
+        // This is more to avoid stack overflow than for performance.
+        setTimeout(() => loadMoreImages(result.next), 0);
       }
-    };
-
-    setTimeout(() => loadMoreImages(), 100);
+    }
+    
+    setTimeout(() => loadMoreImages(), 0);
 
     return () => {
       loading = false;
     };
   }, []);
 
-  if (images.length === 0) {
+  useEffect(() => {
+
+    console.log(`Have total images: ${totalImages}`);
+
+  }, [totalImages]);
+
+  if (totalImages === 0) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div 
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        flexWrap: "wrap",
-        gap: "10px"
-      }}
-    >
-      {images.map((image, index) => {
-        return (
-          <img
-            key={index}
-            style={{
-              height: "200px",
-            }} 
-            src={image.thumb} 
-            alt={`Gallery image ${index + 1}`}
-          />
-        );
-      })}
-    </div>
+    <>
+      <div 
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: "10px"
+        }}
+      >
+        {images.map((image, index) => {
+          return (
+            <img
+              key={index}
+              style={{
+                height: "200px",
+              }} 
+              src={image.thumb} 
+              alt={`Gallery image ${index + 1}`}
+            />
+          );
+        })}
+      </div>
+      
+      <ImageCountMonitor 
+        imageCount={totalImages}
+        />
+    </>
   );
 }
