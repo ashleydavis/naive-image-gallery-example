@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ImageCountMonitor } from './image-count-monitor.jsx';
 
 async function fetchImagesFromAPI(nextToken = undefined, retries = 3) {
-  let url = 'https://photosphere-100k.codecapers.com.au/get-all?db=07156b64-d625-4aed-a53b-ede22866f718&col=metadata';
+  // let url = 'https://photosphere-100k.codecapers.com.au/get-all?db=07156b64-d625-4aed-a53b-ede22866f718&col=metadata';
+  let url = 'http://localhost:3000/get-all?db=07156b64-d625-4aed-a53b-ede22866f718&col=metadata';
   if (nextToken) {
     url += `&next=${nextToken}`;
   }
