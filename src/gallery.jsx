@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ImageCountMonitor } from './image-count-monitor.jsx';
 
+const BASE_URL = `https://photosphere-100k.codecapers.com.au`;
+//const BASE_URL = `http://localhost:3000`;
+const databaseId = `07156b64-d625-4aed-a53b-ede22866f718`;
+
 async function fetchImagesFromAPI(nextToken = undefined, retries = 3) {
-  // let url = 'https://photosphere-100k.codecapers.com.au/get-all?db=07156b64-d625-4aed-a53b-ede22866f718&col=metadata';
-  let url = 'http://localhost:3000/get-all?db=07156b64-d625-4aed-a53b-ede22866f718&col=metadata';
+  let url = `${BASE_URL}/get-all?db=${databaseId}&col=metadata`;
   if (nextToken) {
     url += `&next=${nextToken}`;
   }
@@ -14,7 +17,8 @@ async function fetchImagesFromAPI(nextToken = undefined, retries = 3) {
     if (response.ok) {
       const data = await response.json();
       return {
-        images: data.records.map(record => ({ thumb: record.properties.fullData.src?.tiny || record.properties.fullData.urls?.thumb })),
+        // images: data.records.map(record => ({ thumb: record.properties.fullData.src?.tiny || record.properties.fullData.urls?.thumb })),
+        images: data.records.map(record => ({ thumb: `${BASE_URL}/asset?id=${record._id}&db=${databaseId}&type=thumb` })),
         next: data.next
       };
     }
