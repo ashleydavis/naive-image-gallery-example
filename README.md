@@ -1,6 +1,7 @@
 # naive-example
 
-A simple React image gallery website.
+About
+A simple example of an image gallery that doesn't have particularly good performance for large galleries.
 
 ## Getting Started
 
@@ -15,12 +16,6 @@ A simple React image gallery website.
    ```
 
 - Open your browser to the URL shown in the terminal (typically http://localhost:5173)
-
-## Features
-
-- Responsive image gallery layout
-- Sample images from Picsum
-- Clean, minimal design
 
 ## Scripts
 
