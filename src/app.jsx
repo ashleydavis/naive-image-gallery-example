@@ -15,7 +15,7 @@ function App() {
           right={30}
           bottom={10}
       />
-      <MemoryMonitor />
+      {/* <MemoryMonitor /> */}
       {/* <ImageMemoryMonitor /> */}
       <h1>Simple Image Gallery</h1>
       <Gallery />
