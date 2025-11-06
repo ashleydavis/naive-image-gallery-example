@@ -10,18 +10,22 @@ async function fetchImagesFromAPI(nextToken = undefined, retries = 3) {
   if (nextToken) {
     url += `&next=${nextToken}`;
   }
+
+  // console.log(`Loading from ${url}`);
   
   for (let attempt = 0; attempt <= retries; attempt++) {
     const response = await fetch(url);
     
     if (response.ok) {
       const data = await response.json();
+      console.log(`Got data!`);
       return {
         // images: data.records.map(record => ({ thumb: record.properties.fullData.src?.tiny || record.properties.fullData.urls?.thumb })),
         images: data.records.map(record => ({ thumb: `${BASE_URL}/asset?id=${record._id}&db=${databaseId}&type=thumb` })),
         next: data.next
       };
     }
+   
     
     if (attempt < retries) {
       console.log(`Retry ${attempt + 1} for ${url}`);
@@ -35,13 +39,16 @@ async function fetchImagesFromAPI(nextToken = undefined, retries = 3) {
 export function Gallery() {
   const [images, setImages] = useState([]);
   const [totalImages, setTotalImages] = useState(0);
+  const loading = useRef(true);
 
   useEffect(() => {
-    let loading = true; // Set this to false to stop loading.
+
+    loading.current = true;
 
     async function loadMoreImages(nextToken = undefined) {
-      if (!loading) {
+      if (!loading.current) {
         // Finished loading.
+        console.log(`Finished loading.`);
         return;
       }
       
@@ -56,20 +63,30 @@ export function Gallery() {
 
         // Postpone loading of next page for a moment.
         // This is more to avoid stack overflow than for performance.
-        setTimeout(() => loadMoreImages(result.next), 0);
+        setTimeout(() => loadMoreImages(result.next), 100);
+      }
+      else {
+        loading.current = false;
       }
     }
     
     setTimeout(() => loadMoreImages(), 0);
 
     return () => {
-      loading = false;
+      console.log(`Unmounted`)
+      loading.current = false;
     };
   }, []);
 
   useEffect(() => {
 
     console.log(`Have total images: ${totalImages}`);
+
+    if (totalImages > 50000) {
+      // Maxed out.
+      console.log(`Have enough images.`);        
+      loading.current = false;
+    }
 
   }, [totalImages]);
 
